@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from students.models import Student
+from students.forms import StudentForm
 
 # Create your views here.
 def index(request):
@@ -11,8 +12,22 @@ def student_detail(request, pk):
     student = get_object_or_404(Student, pk=pk)
     return render(request, 'students/student_detail.html', {'student': student})
 def student_add(request):
-    students = Student.objects.all()
-    return render(request, 'students/student_add.html', {'students': students})
-def student_edit(request):
-    students = Student.objects.all()
-    return render(request, 'students/student_edit.html', {'students': students})
+    if request.method == 'POST':
+        form = StudentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('student_list')
+    else:
+        form = StudentForm()
+    return render(request, 'students/student_form.html', {'form': form})
+
+def student_edit(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    if request.method == 'POST':
+        form = StudentForm(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+            return redirect('student_detail', pk=student.pk)
+    else:
+        form = StudentForm(instance=student)
+    return render(request, 'students/student_form.html', {'form': form})
