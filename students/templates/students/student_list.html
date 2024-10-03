@@ -4,4 +4,15 @@
     <li><a href="{% url 'student_detail' student.pk %}">{{ student.first_name }} {{ student.last_name }}</a></li>
 {% endfor %}
 </ul>
-<a href="{% url 'student_add' %}">Add new student</a>
+{% if user.is_authenticated %}
+<a href="{% url 'student_add' %}">Add New Student</a>
+<br><br><br><br>
+  <p>Welcome, {{ user.username }}!</p>
+  <form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form>
+{% else %}
+<br><br>
+  <a href="{% url 'login' %}">Login</a> to see add more students!
+{% endif %}
