@@ -8,7 +8,8 @@ class StudentForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        if Student.objects.filter(email=email).exists():
+        student_id = self.instance.pk
+        if Student.objects.filter(email=email).exclude(pk=student_id).exists():
             raise forms.ValidationError('A student with this email already exists.')
         return email
 

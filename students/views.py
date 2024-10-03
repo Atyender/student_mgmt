@@ -13,7 +13,7 @@ def student_list(request):
     if query:
         students = Student.objects.filter(first_name__icontains=query) | Student.objects.filter(last_name__icontains=query)
     else:
-        students = Student.objects.all()
+        students = Student.objects.all().order_by('first_name')
 
     paginator = Paginator(students, 10)
     page_number = request.GET.get('page')
