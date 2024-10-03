@@ -1,18 +1,25 @@
 <h1>Student List</h1>
+
+<form method="GET" action="."></form>
+  <input type="text" name="q" placeholder="Search students by name" value="{{ request.GET.q }}">
+  <button type="submit">Search</button>
+</form>
 <ul>
-{% for student in students %}
-    <li><a href="{% url 'student_detail' student.pk %}">{{ student.first_name }} {{ student.last_name }}</a></li>
-{% endfor %}
+  {% for student in students %}
+      <li>
+          <a href="{% url 'student_detail' student.pk %}">{{ student.first_name }} {{ student.last_name }}</a>
+      </li>
+  {% endfor %}
 </ul>
 {% if user.is_authenticated %}
 <a href="{% url 'student_add' %}">Add New Student</a>
 <br><br><br><br>
-  <p>Welcome, {{ user.username }}!</p>
+  <p>Logged in as {{ user.username }}.</p>
   <form method="post" action="{% url 'logout' %}">
     {% csrf_token %}
     <button type="submit">Logout</button>
 </form>
 {% else %}
 <br><br>
-  <a href="{% url 'login' %}">Login</a> to see add more students!
+  <a href="{% url 'login' %}">Login</a> to add more students!
 {% endif %}

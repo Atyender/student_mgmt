@@ -7,8 +7,15 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     return render(request, 'students/index.html')
 def student_list(request):
-    students = Student.objects.all()
+    #students = Student.objects.all()
+    #return render(request, 'students/student_list.html', {'students': students})
+    query = request.GET.get('q')
+    if query:
+        students = Student.objects.filter(first_name__icontains=query) | Student.objects.filter(last_name__icontains=query)
+    else:
+        students = Student.objects.all()
     return render(request, 'students/student_list.html', {'students': students})
+
 def student_detail(request, pk):
     student = get_object_or_404(Student, pk=pk)
     return render(request, 'students/student_detail.html', {'student': student})
