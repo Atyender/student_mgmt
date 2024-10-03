@@ -2,19 +2,24 @@ from django.shortcuts import render, get_object_or_404, redirect
 from students.models import Student
 from students.forms import StudentForm
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 # Create your views here.
 def index(request):
     return render(request, 'students/index.html')
+
 def student_list(request):
-    #students = Student.objects.all()
-    #return render(request, 'students/student_list.html', {'students': students})
     query = request.GET.get('q')
     if query:
         students = Student.objects.filter(first_name__icontains=query) | Student.objects.filter(last_name__icontains=query)
     else:
         students = Student.objects.all()
-    return render(request, 'students/student_list.html', {'students': students})
+
+    paginator = Paginator(students, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'students/student_list.html', {'page_obj': page_obj})
 
 def student_detail(request, pk):
     student = get_object_or_404(Student, pk=pk)
