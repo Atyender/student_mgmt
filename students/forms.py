@@ -6,6 +6,16 @@ class StudentForm(forms.ModelForm):
         model = Student
         fields = ['first_name', 'last_name', 'email', 'date_of_birth', 'enrollment_date', 'grade']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Add placeholders for date fields
+        self.fields['date_of_birth'].widget.attrs.update({
+            'placeholder': 'YYYY-MM-DD'
+        })
+        self.fields['enrollment_date'].widget.attrs.update({
+            'placeholder': 'YYYY-MM-DD'
+        })
+
     def clean_email(self):
         email = self.cleaned_data.get('email')
         student_id = self.instance.pk

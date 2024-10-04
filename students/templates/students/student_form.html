@@ -40,7 +40,14 @@
             <ul>
                 {% for field in form %}
                     {% if field.errors %}
-                        <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                        <li>{{ field.label }}: 
+                            {% for error in field.errors %}
+                                {{ error }}
+                                {% if field.name == 'date_of_birth' or field.name == 'enrollment_date' %}
+                                    (required format: YYYY-MM-DD)
+                                {% endif %}
+                            {% endfor %}
+                        </li>
                     {% endif %}
                 {% endfor %}
             </ul>
@@ -50,6 +57,7 @@
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Save</button>
+            {% if form.instance.pk %}<button type="submit" name="delete" style="background-color: #dc3545; color: white; margin-top: 10px;">Delete</button>{% endif %}
         </form>
         <br><br>
         {% if user.is_authenticated %}

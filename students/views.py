@@ -40,10 +40,14 @@ def student_add(request):
 def student_edit(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == 'POST':
-        form = StudentForm(request.POST, instance=student)
-        if form.is_valid():
-            form.save()
-            return redirect('student_detail', pk=student.pk)
+        if 'save' in request.POST:
+            form = StudentForm(request.POST, instance=student)
+            if form.is_valid():
+                form.save()
+                return redirect('student_list')
+        elif 'delete' in request.POST:
+            student.delete()
+            return redirect('student_list')
     else:
         form = StudentForm(instance=student)
     return render(request, 'students/student_form.html', {'form': form})
